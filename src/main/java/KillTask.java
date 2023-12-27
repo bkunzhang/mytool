@@ -1,4 +1,6 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -12,18 +14,26 @@ public class KillTask {
                 + "pid=$(ps -ef | grep 'docker build' | grep Dockerfile | awk '{ print $2 }')" + System.lineSeparator()
                 + "echo kill $pid" + System.lineSeparator()
                 + "kill $pid";
-        System.out.println(bashFileContent);
-        writeStrToFile(bashFileContent, new File("/bk/my-tool/kill1.sh"));
+        System.out.println("bashFileContent: " + bashFileContent);
+        writeStrToFile(bashFileContent, new File("/bk/my-shell/kill1.sh"));
 
         ExecuteShellTimer.scheduleOnce(() -> {
-            ExecuteShell.main(new String[] {"sh /bk/my-tool/kill1.sh"});
+            ExecuteShell.main(new String[]{"sh /bk/my-shell/kill1.sh"});
             System.out.println("my task 20231227 ok!!!");
             ExecuteShellTimer.shutdownScheduledThreadPoolExecutor();
         }, 60 * 60 * 2L);
 
     }
 
+    private static void ensureDirExists(File dir) {
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+    }
+
     public static void writeStrToFile(String str, File file) {
+        ensureDirExists(file.getParentFile());
+
         try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file),
                 StandardCharsets.UTF_8)) {
             outputStreamWriter.write(str);

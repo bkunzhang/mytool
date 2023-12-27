@@ -6,8 +6,12 @@ import java.io.File;
  */
 public class T {
     public static void main(String[] args) {
-        File file = new File("H:\\mi11-photos\\20210920" +
-                "\\Pictures\\2019铁仔山\\IMG_20190713_191821.jpg");
-        System.out.println(file.length() * 1.0 / 1024 / 1024);
+        ensureDirExists(new File("f:/d/e/1.txt").getParentFile());
+    }
+
+    private static void ensureDirExists(File dir) {
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
     }
 }
