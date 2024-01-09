@@ -19,7 +19,13 @@ public class SocketServerT implements Runnable {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 3, 1, TimeUnit.MINUTES,
             new LinkedBlockingQueue<>(1), new ThreadPoolExecutor.CallerRunsPolicy());
 
-    private AtomicInteger count = new AtomicInteger(0);
+    //private AtomicInteger count = new AtomicInteger(0);
+    private static ThreadLocal<AtomicInteger> countThreadLocal = new ThreadLocal<AtomicInteger>() {
+        @Override
+        protected AtomicInteger initialValue() {
+            return new AtomicInteger(0);
+        }
+    };
 
     private Socket socket;
 
@@ -60,8 +66,8 @@ public class SocketServerT implements Runnable {
                 outputStream.write(new byte[] {0}); // finish flag
                 outputStream.flush();
             }
-            // todo 这里count为啥一直是1
-            System.out.println("threadId=" + Thread.currentThread().getId() + ", count=" + count.incrementAndGet());
+            // todo 这里count为啥一直是1。正常，这个对象每次是new的，这不是ThreadLocal
+            System.out.println("threadId=" + Thread.currentThread().getId() + ", count=" + countThreadLocal.get().incrementAndGet());
 
         } catch (IOException e) {
             e.printStackTrace();
