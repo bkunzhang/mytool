@@ -19,6 +19,7 @@ public class TelnetTest {
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress(args[0], Integer.parseInt(args[1])),  2000);
             System.out.println("ok");
+            socket.close();
         } catch (IOException e) {
             System.err.println("cannot connect");
         }
