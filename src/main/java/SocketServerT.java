@@ -55,7 +55,7 @@ public class SocketServerT implements Runnable {
                 }
                 readInfo.append(new String(buffer, 0, len));
                 System.out.println("current read info=" + readInfo);
-                String respStr = "收到，local time=" + LocalDateTime.now(Clock.systemDefaultZone());
+                String respStr = "server ok, local time=" + LocalDateTime.now(Clock.systemDefaultZone());
                 outputStream.write(respStr.getBytes(StandardCharsets.UTF_8));
                 outputStream.write(new byte[] {0}); // finish flag
                 outputStream.flush();
