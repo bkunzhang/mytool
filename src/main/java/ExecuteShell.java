@@ -1,8 +1,7 @@
+import util.DateTimeUtil;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -10,11 +9,10 @@ import java.util.ArrayList;
  * @date 2023/12/27
  */
 public class ExecuteShell {
-    public static DateTimeFormatter DATETIME_DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     public static void main(String[] args) {
         try {
-            System.out.println(DATETIME_DEFAULT_FORMATTER.format(LocalDateTime.now(Clock.systemUTC())) + "  thread ("
+            System.out.println(DateTimeUtil.getSimpleUTCTimeStrOfNow() + "  thread ("
                     + Thread.currentThread().getName() + ") exec shell:");
             String cmd = "ps -ef";
             if (args != null && args.length >= 1) {

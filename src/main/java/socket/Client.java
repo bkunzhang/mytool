@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Client {
     public static void main(String[] args) throws IOException {
-        try (Socket socket = new Socket("127.0.0.1", 30055);
+        try (Socket socket = new Socket("39.108.173.218", 30003);
              InputStream inputStream = socket.getInputStream();
              OutputStream outputStream = socket.getOutputStream()) {
 
