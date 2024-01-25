@@ -1,3 +1,5 @@
+package socket;
+
 import util.DateTimeUtil;
 
 import java.io.IOException;
@@ -13,26 +15,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author bkunzh
- * @date 2023/6/17
+ * @date 2024/1/24
  *
- * 浏览器访问响应:ok，postman不行
- *
- * 可以用curl验证响应:
- *  curl --location --request POST 'http://127.0.0.1:30055/akdjf/tt' --header 'Content-Type: application/json' --data-raw '{
- *     "todo_info": "2222222",
- *     "source": "postman_test1"
- * }' -v
- *
- *
- * curl --location --request POST 'http://39.108.173.218:30003/akdjf/tt' \
- * --header 'Content-Type: application/json' \
- * --data-raw '{
- *     "todo_info": "2222222",
- *     "source": "postman_test1"
- * }'
- *
+ * java -Xms10m -Xmx50m socket.LongConnectServer
+ * java -Xms1m -Xmx2m socket.LongConnectServer
+ * test Exception: java.lang.OutOfMemoryError thrown from the UncaughtExceptionHandler in thread "main"
  */
-public class SocketServerT implements Runnable {
+public class LongConnectServer implements Runnable {
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 3, 1, TimeUnit.MINUTES,
             new LinkedBlockingQueue<>(1), new ThreadPoolExecutor.CallerRunsPolicy());
 
@@ -45,7 +34,7 @@ public class SocketServerT implements Runnable {
 
     private Socket socket;
 
-    public SocketServerT(Socket socket) {
+    public LongConnectServer(Socket socket) {
         this.socket = socket;
     }
 
@@ -57,7 +46,7 @@ public class SocketServerT implements Runnable {
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
             Socket socket = serverSocket.accept();
-            threadPoolExecutor.execute(new SocketServerT(socket));
+            threadPoolExecutor.execute(new LongConnectServer(socket));
         }
 
     }
@@ -73,9 +62,11 @@ public class SocketServerT implements Runnable {
                 char[] buffer = new char[10];
                 int len = reader.read(buffer);
                 if (len == -1) { // inputstream closed
-                    System.out.println(DateTimeUtil.getSimpleUTCTimeStrOfNow()
-                            + " inputstream closed: threadId=" + Thread.currentThread().getId());
+                    System.out.println("len = -1");
                     break;
+                    //if (false) {
+                    //    break;
+                    //}
                 }
                 readInfo.append(new String(buffer, 0, len));
                 System.out.println(DateTimeUtil.getSimpleUTCTimeStrOfNow()
@@ -94,12 +85,15 @@ public class SocketServerT implements Runnable {
                         "\n";
 
                 outputStream.write(respStr.getBytes(StandardCharsets.UTF_8));
-                outputStream.write(new byte[] {0}); // finish flag
+                //outputStream.write(new byte[] {0}); // finish flag
                 outputStream.flush();
             }
             System.out.println("threadId=" + Thread.currentThread().getId() + ", count=" + countThreadLocal.get().incrementAndGet());
-
+            System.out.println("will disconnect 10min");
+            TimeUnit.MINUTES.sleep(10L);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 

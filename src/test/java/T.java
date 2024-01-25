@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Locale;
 
 /**
  * @author bkunzh
@@ -6,7 +7,7 @@ import java.io.File;
  */
 public class T {
     public static void main(String[] args) {
-        ensureDirExists(new File("f:/d/e/1.txt").getParentFile());
+        System.out.println(System.getProperty("os.name").toLowerCase(Locale.ROOT).startsWith("win"));
     }
 
     private static void ensureDirExists(File dir) {
